@@ -5,7 +5,7 @@ process.env.NODE_CONFIG_DIR = `${__dirname}/ZelBack/config/`;
 // Flux configuration
 const config = require('config');
 const fs = require('fs');
-const https = require('https');
+const https = require('http2');
 const path = require('path');
 const util = require('util');
 const nodecmd = require('node-cmd');
@@ -100,8 +100,8 @@ async function initiate() {
     }
     const key = fs.readFileSync(path.join(__dirname, './certs/v1.key'), 'utf8');
     const cert = fs.readFileSync(path.join(__dirname, './certs/v1.crt'), 'utf8');
-    const credentials = { key, cert };
-    const httpsServer = https.createServer(credentials, app);
+    const credentials = { key, cert, allowHTTP1: true };
+    const httpsServer = https.createSecureServer(credentials, app);
     httpsServer.listen(apiPortHttps, () => {
       log.info(`Flux https listening on port ${apiPortHttps}!`);
     });
